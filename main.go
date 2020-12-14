@@ -7,28 +7,30 @@ import (
 	"os/exec"
 )
 
+type board [9]string
+
 func main() {
-	board := [9]string{}
+	var grid board
 	gameOver := false
-	var err error
+	//var err error
 	player := "O"
 	turnNumber := 0
 	var winner string
 
 	for gameOver != true {
-		PrintBoard(board)
+		PrintBoard(grid)
 		move := askforplay()
-		err, board = play(move, player, board)
+		err := grid.play(move, player)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 		player = SwitchPlayers(player)
 		turnNumber++
-		gameOver, winner = CheckForWinner(board, turnNumber)
+		gameOver, winner = CheckForWinner(grid, turnNumber)
 		fmt.Println(winner)
 	}
-	PrintBoard(board)
+	PrintBoard(grid)
 	if winner == "" {
 		fmt.Println("it's a draw ")
 	} else {
@@ -87,12 +89,12 @@ func SwitchPlayers(player string) string {
 	return "O"
 }
 
-func play(pos int, player string, b [9]string) (error, [9]string) {
+func (b *board) play(pos int, player string) error {
 	if b[pos-1] == "" {
 		b[pos-1] = player
-		return nil, b
+		return nil
 	}
-	return errors.New("try another move"), b
+	return errors.New("try another move")
 }
 
 func askforplay() int {
@@ -116,8 +118,9 @@ func PrintBoard(b [9]string) {
 		if i > 0 && (i+1)%3 == 0 {
 			fmt.Printf("\n")
 		} else {
-			fmt.Print("|")
-		}
-	}
+			fmt.Printf("|")
 
+		}
+
+	}
 }
