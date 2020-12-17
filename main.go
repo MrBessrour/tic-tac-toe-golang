@@ -7,30 +7,31 @@ import (
 	"os/exec"
 )
 
-type board [9]string
+type Game struct {
+	board      [9]string
+	player     string
+	turnNumber int
+}
 
 func main() {
-	var grid board
+	var game Game
+	game.player = "O"
+
 	gameOver := false
-	//var err error
-	player := "O"
-	turnNumber := 0
 	var winner string
 
 	for gameOver != true {
-		PrintBoard(grid)
+		PrintBoard(game.board)
 		move := askforplay()
-		err := grid.play(move, player)
+		err := game.play(move)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		player = SwitchPlayers(player)
-		turnNumber++
-		gameOver, winner = CheckForWinner(grid, turnNumber)
-		fmt.Println(winner)
+
+		gameOver, winner = CheckForWinner(game.board, game.turnNumber)
 	}
-	PrintBoard(grid)
+	PrintBoard(game.board)
 	if winner == "" {
 		fmt.Println("it's a draw ")
 	} else {
@@ -82,16 +83,19 @@ func ClearScreen() {
 	c.Run()
 }
 
-func SwitchPlayers(player string) string {
-	if player == "O" {
-		return "X"
+func (game *Game) SwitchPlayers() {
+	if game.player == "O" {
+		game.player = "X"
+		return
 	}
-	return "O"
+	game.player = "O"
 }
 
-func (b *board) play(pos int, player string) error {
-	if b[pos-1] == "" {
-		b[pos-1] = player
+func (game *Game) play(pos int) error {
+	if game.board[pos-1] == "" {
+		game.board[pos-1] = game.player
+		game.SwitchPlayers()
+		game.turnNumber += 1
 		return nil
 	}
 	return errors.New("try another move")
@@ -99,10 +103,8 @@ func (b *board) play(pos int, player string) error {
 
 func askforplay() int {
 	var moveInt int
-	//for moveInt < 0 || moveInt > 9 {
 	fmt.Println("Enter Pos to play: ")
 	fmt.Scan(&moveInt)
-	//}
 	return moveInt
 }
 
