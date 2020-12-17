@@ -1,5 +1,6 @@
 <h1> Tic Tac Toe game with Golang </h1>
 <h4>This is a command line tic tac toe game . i am learning Golang and this is my first Golang project</h4> .<br>
+Youtube video : https://www.youtube.com/watch?v=44iHFWIs07A <br>
 <h2>Credits</h2>
 this code helped me so much : https://github.com/sts10/tic-tac-go <br>
 thanks to : https://github.com/sts10 <br>
